@@ -1,0 +1,2 @@
+[console_scripts]
+snackstack = main:main

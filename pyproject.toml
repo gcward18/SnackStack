@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "snackstack"
+version = "0.1.0"
+description = "A multi-agent snack ordering assistant."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain",
+    "langchain-chroma",
+    "langchain-openai",
+    "openai",
+    "pandas",
+    "python-dotenv",
+]
+
+[project.scripts]
+snackstack = "main:main"
+
+# This project intentionally keeps several packages in the repository root.
+# Declare them explicitly instead of relying on setuptools' flat-layout
+# auto-discovery, which rejects multiple top-level packages.
+[tool.setuptools]
+py-modules = ["main", "config", "state", "graph", "logger"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agents*", "data*", "tools*", "voice*"]
+exclude = ["docs*", "tests*"]
+
+[tool.setuptools.package-data]
+data = ["*.csv"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+exclude = [
+    ".git",
+    ".idea",
+    ".venv",
+    "chroma_db",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # Pyflakes
+    "I",    # Import sorting
+    "B",    # Common bug patterns
+    "UP",   # Modern Python syntax
+    "RUF",  # Ruff-specific rules
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = true

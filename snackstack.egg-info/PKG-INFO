@@ -1,0 +1,25 @@
+Metadata-Version: 2.4
+Name: snackstack
+Version: 0.1.0
+Summary: A multi-agent snack ordering assistant.
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: langchain
+Requires-Dist: langchain-chroma
+Requires-Dist: langchain-openai
+Requires-Dist: openai
+Requires-Dist: pandas
+Requires-Dist: python-dotenv
+
+# SnackStack
+
+SnackStack is a multi-agent snack ordering assistant with menu search, order
+status lookup, retrieval-augmented generation, and optional voice support.
+
+## Setup
+
+1. Create and activate a Python 3.11+ virtual environment.
+2. Install the project with `pip install -e .`.
+3. Copy `.env` to `.env` and add your OpenAI API key.
+4. Run `snackstack` or `python main.py`.
+
