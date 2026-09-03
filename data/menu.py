@@ -1,4 +1,5 @@
 """SnackStack menu catalog data access."""
+
 from langchain_core.documents import Document
 
 menu_items = [
@@ -70,7 +71,7 @@ menu_items = [
 
 
 def get_menu_documents() -> list[Document]:
-    """""Convert menu items into LangChain documents."""""
+    """""Convert menu items into LangChain documents.""" ""
     documents = []
 
     for index, item in enumerate(menu_items):
@@ -91,11 +92,12 @@ def get_menu_documents() -> list[Document]:
                 page_content=page_content,
                 metadata={
                     "dietary": dietary,
-                    'dish': item['Dish'],
-                    'cuisine': item['Cuisine'],
-                    'price': item['Price'],
-                    'rating': item['Rating'],
-                })
+                    "dish": item["Dish"],
+                    "cuisine": item["Cuisine"],
+                    "price": item["Price"],
+                    "rating": item["Rating"],
+                },
+            )
         )
 
     return documents

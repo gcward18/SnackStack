@@ -43,6 +43,7 @@ orders = [
     },
 ]
 
+
 def get_order(identifier: str) -> dict[str, str] | None:
     """Find an order by order ID, tracking ID, or email."""
     normalized_identifier = identifier.strip().casefold()

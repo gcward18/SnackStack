@@ -1,7 +1,9 @@
 """Tools for retrieving order status."""
+
 from typing import Any
 from langchain.tools import tool
 from data.orders import get_order
+
 
 @tool
 def get_order_status(identifier: str) -> dict[str, Any]:
@@ -20,8 +22,6 @@ def get_order_status(identifier: str) -> dict[str, Any]:
     order = get_order(identifier)
 
     if not order:
-        return {
-            "error": "No order found with that identifier"
-        }
+        return {"error": "No order found with that identifier"}
 
     return order
