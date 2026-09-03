@@ -70,24 +70,24 @@ menu_items = [
 
 
 def get_menu_documents() -> list[Document]:
-    """"Convert menu items into LangChain documents."""
+    """""Convert menu items into LangChain documents."""""
     documents = []
 
     for index, item in enumerate(menu_items):
         dietary = item["Dietary"] or "Not specified"
 
         page_content = (
-            f"Dish: {item['Dish']}."
-            f"Cuisine: {item['Cuisine']}."
-            f"Price: {item['Price']}."
-            f"Rating: {item['Rating']}."
-            f"Dietary: {item['Dietary']}."
-            f"Description: {item['Description']}."
+            f"Dish: {item['Dish']}. "
+            f"Cuisine: {item['Cuisine']}. "
+            f"Price: {item['Price']}. "
+            f"Rating: {item['Rating']}. "
+            f"Dietary: {dietary}. "
+            f"Description: {item['Description']}. "
         )
 
         documents.append(
             Document(
-                id=f"menu-${index}",
+                id=f"menu-{index}",
                 page_content=page_content,
                 metadata={
                     "dietary": dietary,

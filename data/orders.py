@@ -1,5 +1,4 @@
 """SnackStack order database access."""
-from langchain_core.documents import Document
 
 orders = [
     {
@@ -44,9 +43,24 @@ orders = [
     },
 ]
 
-def get_order(order_id: str) -> list[dict[str, str]]:
-    """Get orders into LangChain Documents."""
+def get_order(identifier: str) -> dict[str, str] | None:
+    """Find an order by order ID, tracking ID, or email."""
+    normalized_identifier = identifier.strip().casefold()
+
+    searchable_fields = (
+        "Order ID",
+        "Tracking",
+        "Email",
+    )
+
     return next(
-        (order for order in orders if order["Order ID"] == order_id),
+        (
+            order
+            for order in orders
+            if any(
+                order[field].casefold() == normalized_identifier
+                for field in searchable_fields
+            )
+        ),
         None,
     )
