@@ -1,7 +1,9 @@
 """Tools for retrieving order status."""
 
 from typing import Any
+
 from langchain.tools import tool
+
 from data.orders import get_order
 
 

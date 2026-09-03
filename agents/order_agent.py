@@ -1,10 +1,12 @@
 """Order status agent node."""
 
 import re
-from langchain_core.messages import HumanMessage, SystemMessage
 from typing import Literal
-from agents.prompts import ORDER_AGENT_PROMPT
+
+from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.types import Command, interrupt
+
+from agents.prompts import ORDER_AGENT_PROMPT
 from config import get_llm
 from state import StackState
 from tools.order_tools import get_order_status
@@ -33,9 +35,10 @@ def extract_identifier(text: str) -> str | None:
 
 def order_agent_node(
     state: StackState,
-) -> Command[str]:
+) -> Command[Literal["synthesizer_node"]]:
+    """Look up an order and route the grounded response to the synthesizer."""
     user_query = state["user_query"]
-    identifier = extract_identifier(state["user_query"])
+    identifier = extract_identifier(user_query)
 
     if not identifier:
         resumed_value = interrupt(
@@ -45,18 +48,18 @@ def order_agent_node(
                 )
             }
         )
+        identifier = extract_identifier(str(resumed_value))
 
-    identifier = extract_identifier(str(resumed_value))
-
-    if not identifier:
-        return Command(
-            update={
-                "order_response": (
-                    "I couldn't identify a valid order id, tracking id, email address."
-                )
-            },
-            goto="synthesizer_node",
-        )
+        if not identifier:
+            return Command(
+                update={
+                    "order_response": (
+                        "I couldn't identify a valid order ID, tracking ID, "
+                        "or email address."
+                    )
+                },
+                goto="synthesizer_node",
+            )
 
     llm_with_tools = get_llm().bind_tools(ORDER_TOOLS)
 

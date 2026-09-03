@@ -1,6 +1,7 @@
 """Shared graph state definitions."""
 
 from typing import TypedDict
+
 from langchain_core.messages import AnyMessage
 
 
@@ -10,6 +11,7 @@ class StackState(TypedDict, total=False):
     messages: list[AnyMessage]
     user_query: str
     route: list[str]
+    routing_reason: str
     menu_response: str
     order_response: str
     final_answer: str

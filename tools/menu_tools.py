@@ -1,7 +1,9 @@
 """Tools for searching the menu catalog."""
 
 from typing import Any
+
 from langchain.tools import tool
+
 from tools.rag import get_retriever
 
 
