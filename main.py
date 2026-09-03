@@ -81,17 +81,62 @@ class SnackStackAssistant:
         return final_answer or "SnackStack did not produce a response."
 
 
-def run_text_loop(assistant: SnackStackAssistant) -> None:
+def _read_question(use_voice: bool) -> str:
+    """Read a typed question or record and transcribe a spoken question."""
+    if not use_voice:
+        return input("\nYou: ").strip()
+
+    action = input("\nPress Enter to speak, or type reset/quit: ").strip()
+    if action:
+        return action
+
+    from voice.recorder import record_and_transcribe
+
+    print("Listening for 5 seconds...")
+    question = record_and_transcribe()
+    print(f"You said: {question}")
+    return question
+
+
+def _present_response(response: str, use_voice_out: bool) -> None:
+    """Log and display a response, optionally speaking it aloud."""
+    logger.info("Assistant response: %s", response)
+    print(f"\nSnackStack: {response}")
+
+    if not use_voice_out:
+        return
+
+    try:
+        from voice.speaker import speak
+
+        speak(response)
+    except Exception:
+        logger.exception("Voice output failed")
+        print("Voice output failed; the text response is shown above.")
+
+
+def run_text_loop(
+    assistant: SnackStackAssistant,
+    *,
+    use_voice: bool = False,
+    use_voice_out: bool = False,
+) -> None:
     """Run the interactive SnackStack command loop."""
     print("SnackStack is ready.")
     print("Commands: reset, quit")
+    if use_voice_out:
+        print("Voice output is AI-generated.")
 
     while True:
         try:
-            question = input("\nYou: ").strip()
+            question = _read_question(use_voice)
         except (EOFError, KeyboardInterrupt):
             print("\nGoodbye!")
             break
+        except Exception:
+            logger.exception("Voice input failed")
+            print("Voice input failed. Check your microphone and audio settings.")
+            continue
 
         if not question:
             continue
@@ -113,8 +158,7 @@ def run_text_loop(assistant: SnackStackAssistant) -> None:
             print("SnackStack encountered an error.")
             continue
 
-        logger.info("Assistant response: %s", response)
-        print(f"\nSnackStack: {response}")
+        _present_response(response, use_voice_out)
 
 
 def parse_args() -> argparse.Namespace:
@@ -124,6 +168,16 @@ def parse_args() -> argparse.Namespace:
         "--ask",
         metavar="QUESTION",
         help="Ask one question and exit",
+    )
+    parser.add_argument(
+        "--voice",
+        action="store_true",
+        help="Record spoken questions in the interactive loop",
+    )
+    parser.add_argument(
+        "--voice-out",
+        action="store_true",
+        help="Speak assistant responses using AI-generated audio",
     )
     return parser.parse_args()
 
@@ -135,11 +189,16 @@ def main() -> None:
 
     if args.ask:
         response = assistant.ask(args.ask)
-        logger.info("Assistant response: %s", response)
-        print(response)
+        if args.voice_out:
+            print("Voice output is AI-generated.")
+        _present_response(response, args.voice_out)
         return
 
-    run_text_loop(assistant)
+    run_text_loop(
+        assistant,
+        use_voice=args.voice,
+        use_voice_out=args.voice_out,
+    )
 
 
 if __name__ == "__main__":
